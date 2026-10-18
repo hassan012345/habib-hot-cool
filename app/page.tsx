@@ -9,6 +9,12 @@ import {
 
 const phone = '03004120601';
 const whatsapp = 'https://wa.me/923004120601';
+const serviceMenuGroups = [
+  { title: 'Air Conditioning', icon: Snowflake, items: ['Buy & Sell ACs', 'Copper Piping & Wiring', 'AC Installation', 'AC Maintenance', 'AC Deep Cleaning & Wash', 'AC Repair & Troubleshooting'] },
+  { title: 'Solar Panels', icon: Sun, items: ['Solar Panel Washing', 'Solar Panel Installation'] },
+  { title: 'Refrigeration', icon: Wind, items: ['Refrigerator & Freezer Buy / Sell', 'Refrigeration Installation', 'Refrigeration Accessories', 'Refrigeration Repair'] },
+  { title: 'Home Appliances', icon: Zap, items: ['Appliance Repair & Maintenance', 'Appliance Installation'] },
+];
 const services = [
   { icon: Snowflake, number: '01', title: 'AC Installation', text: 'Neat, reliable installation for new units, with the right setup for your space.' },
   { icon: Wrench, number: '02', title: 'Repair & Troubleshooting', text: 'From cooling issues and unusual noises to leaks and electrical faults.' },
@@ -20,7 +26,8 @@ const services = [
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [service, setService] = useState('AC repair');
+  const [serviceMenuOpen, setServiceMenuOpen] = useState(false);
+  const [service, setService] = useState('AC Repair & Troubleshooting');
   const [name, setName] = useState('');
   const [details, setDetails] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -32,7 +39,8 @@ export default function Home() {
     setSubmitted(true);
   }
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => { setMenuOpen(false); setServiceMenuOpen(false); };
+  const chooseService = (item: string) => { setService(item); closeMenu(); };
 
   return (
     <main>
@@ -41,7 +49,19 @@ export default function Home() {
         <div className="container nav-wrap">
           <a className="brand" href="#home" aria-label="Habib Hot and Cool home"><span className="brand-mark"><Snowflake size={25} strokeWidth={2.2} /></span><span className="brand-copy"><strong>HABIB <b>HOT & COOL</b></strong><small>COOLING • COMFORT • CARE</small></span></a>
           <button className="mobile-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
-          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}><a onClick={closeMenu} href="#services">Services</a><a onClick={closeMenu} href="#about">About us</a><a onClick={closeMenu} href="#solar">Solar care</a><a onClick={closeMenu} href="#contact">Contact</a><a onClick={closeMenu} href={whatsapp} target="_blank" rel="noreferrer" className="nav-cta">Get a quote <ArrowRight size={16} /></a></nav>
+          <nav className={menuOpen ? 'nav-links open' : 'nav-links'}>
+            <div className={`nav-service-menu ${serviceMenuOpen ? 'expanded' : ''}`}>
+              <button className="nav-service-trigger" type="button" aria-expanded={serviceMenuOpen} aria-controls="services-dropdown" onClick={() => setServiceMenuOpen(!serviceMenuOpen)}>Services <ChevronDown size={15} /></button>
+              {serviceMenuOpen && <div className="services-dropdown" id="services-dropdown">
+                {serviceMenuGroups.map((group) => { const Icon = group.icon; return <div className="dropdown-group" key={group.title}>
+                  <div className="dropdown-group-title"><span><Icon size={16}/></span>{group.title}</div>
+                  {group.items.map((item) => <a key={item} href="#contact" onClick={() => chooseService(item)}>{item}<ArrowRight size={13}/></a>)}
+                </div>; })}
+                <a className="dropdown-all-services" href="#services" onClick={closeMenu}>Explore all services <ArrowRight size={15}/></a>
+              </div>}
+            </div>
+            <a onClick={closeMenu} href="#about">About us</a><a onClick={closeMenu} href="#solar">Solar care</a><a onClick={closeMenu} href="#contact">Contact</a><a onClick={closeMenu} href={whatsapp} target="_blank" rel="noreferrer" className="nav-cta">Get a quote <ArrowRight size={16} /></a>
+          </nav>
         </div>
       </header>
 
@@ -71,7 +91,7 @@ export default function Home() {
 
       <section className="buy-sell-section"><div className="container buy-sell-grid"><div className="buy-sell-copy"><div className="eyebrow"><span className="eyebrow-line"/> BUY SMART. SELL WITH EASE.</div><h2>New or pre-loved.<br /><em>We've got you.</em></h2><p>Need a new AC for summer, or looking to sell your existing unit? Tell us what you need and we'll help you explore suitable options.</p><div className="buy-sell-actions"><a className="btn btn-dark" href={`${whatsapp}?text=${encodeURIComponent('Assalam-o-Alaikum! I am interested in buying an AC.')}`} target="_blank" rel="noreferrer">I want to buy <ArrowRight size={17}/></a><a className="btn btn-outline" href={`${whatsapp}?text=${encodeURIComponent('Assalam-o-Alaikum! I would like to sell my AC.')}`} target="_blank" rel="noreferrer">I want to sell <ArrowRight size={17}/></a></div><small className="fine-print">Availability, condition and pricing are confirmed directly with our team.</small></div><div className="buy-sell-visual"><div className="buy-image"/><div className="buy-badge"><Snowflake size={19}/><span>Find the right<br/><strong>cooling solution</strong></span></div><div className="buy-mini-card"><span className="mini-icon"><Check size={15}/></span><span><strong>New & used ACs</strong><small>Options for different budgets</small></span></div></div></div></section>
 
-      <section className="contact-section" id="contact"><div className="container contact-grid"><div className="contact-copy"><div className="eyebrow light"><span className="eyebrow-line"/> LET'S GET YOU COMFORTABLE</div><h2>Need a hand<br />with your <em>AC?</em></h2><p>Tell us what you need. We'll connect on WhatsApp to discuss the service and next steps.</p><div className="contact-direct"><a href={`tel:${phone}`} className="direct-line"><span><Phone size={19}/></span><div><small>CALL US DIRECTLY</small><strong>{phone}</strong></div></a><a href={whatsapp} target="_blank" rel="noreferrer" className="direct-line"><span><MessageCircle size={20}/></span><div><small>CHAT ON WHATSAPP</small><strong>Message Habib Hot & Cool</strong></div></a></div><div className="social-links"><span>FOLLOW ALONG</span><a href="https://www.facebook.com/habib.hotandcools" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={17}/></a><a href="https://www.instagram.com/habib.hotandcool" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={17}/></a></div></div><form className="contact-form" onSubmit={sendRequest}><div className="form-heading"><span>QUICK SERVICE REQUEST</span><span className="form-spark"><Sparkles size={18}/></span></div><h3>How can we help?</h3><p>Fill this in and we'll open a WhatsApp message for you.</p><label htmlFor="name">Your name</label><input id="name" required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Ahmed"/><label htmlFor="service">What do you need?</label><div className="select-wrap"><select id="service" value={service} onChange={e => setService(e.target.value)}><option>AC repair</option><option>AC service & maintenance</option><option>New AC installation</option><option>Buy a new AC</option><option>Buy a used AC</option><option>Sell my AC</option><option>Solar panel washing</option><option>Other enquiry</option></select><ChevronDown size={17}/></div><label htmlFor="details">A few details <span>(optional)</span></label><textarea id="details" value={details} onChange={e => setDetails(e.target.value)} placeholder="Tell us a little about what you need…" rows={3}/><button className="btn btn-lime form-submit" type="submit">{submitted ? 'Send another request' : 'Continue on WhatsApp'} <ArrowRight size={18}/></button><small className="privacy-note"><ShieldCheck size={13}/> Your request is sent directly to our WhatsApp chat.</small></form></div></section>
+      <section className="contact-section" id="contact"><div className="container contact-grid"><div className="contact-copy"><div className="eyebrow light"><span className="eyebrow-line"/> LET'S GET YOU COMFORTABLE</div><h2>Need a hand<br />with your <em>AC?</em></h2><p>Tell us what you need. We'll connect on WhatsApp to discuss the service and next steps.</p><div className="contact-direct"><a href={`tel:${phone}`} className="direct-line"><span><Phone size={19}/></span><div><small>CALL US DIRECTLY</small><strong>{phone}</strong></div></a><a href={whatsapp} target="_blank" rel="noreferrer" className="direct-line"><span><MessageCircle size={20}/></span><div><small>CHAT ON WHATSAPP</small><strong>Message Habib Hot & Cool</strong></div></a></div><div className="social-links"><span>FOLLOW ALONG</span><a href="https://www.facebook.com/habib.hotandcools" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={17}/></a><a href="https://www.instagram.com/habib.hotandcool" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={17}/></a></div></div><form className="contact-form" onSubmit={sendRequest}><div className="form-heading"><span>QUICK SERVICE REQUEST</span><span className="form-spark"><Sparkles size={18}/></span></div><h3>How can we help?</h3><p>Fill this in and we'll open a WhatsApp message for you.</p><label htmlFor="name">Your name</label><input id="name" required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Ahmed"/><label htmlFor="service">What do you need?</label><div className="select-wrap"><select id="service" value={service} onChange={e => setService(e.target.value)}><option>AC Repair & Troubleshooting</option><option>AC Maintenance</option><option>AC Deep Cleaning & Wash</option><option>AC Installation</option><option>Buy & Sell ACs</option><option>Copper Piping & Wiring</option><option>Solar Panel Washing</option><option>Solar Panel Installation</option><option>Refrigerator & Freezer Buy / Sell</option><option>Refrigeration Installation</option><option>Refrigeration Accessories</option><option>Refrigeration Repair</option><option>Appliance Repair & Maintenance</option><option>Appliance Installation</option><option>Other enquiry</option></select><ChevronDown size={17}/></div><label htmlFor="details">A few details <span>(optional)</span></label><textarea id="details" value={details} onChange={e => setDetails(e.target.value)} placeholder="Tell us a little about what you need…" rows={3}/><button className="btn btn-lime form-submit" type="submit">{submitted ? 'Send another request' : 'Continue on WhatsApp'} <ArrowRight size={18}/></button><small className="privacy-note"><ShieldCheck size={13}/> Your request is sent directly to our WhatsApp chat.</small></form></div></section>
 
       <footer className="footer"><div className="container footer-main"><a className="brand footer-brand" href="#home"><span className="brand-mark"><Snowflake size={24}/></span><span className="brand-copy"><strong>HABIB <b>HOT & COOL</b></strong><small>COOLING • COMFORT • CARE</small></span></a><p>Keeping your spaces comfortable, one service at a time.</p><a className="back-top" href="#home">BACK TO TOP <ArrowDownRight size={15}/></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Habib Hot & Cool. All rights reserved.</span><span>Owner: Habib Ullah</span><div><a href="https://www.facebook.com/habib.hotandcools" target="_blank" rel="noreferrer">Facebook</a><a href="https://www.instagram.com/habib.hotandcool" target="_blank" rel="noreferrer">Instagram</a></div></div></footer>
       <a className="floating-whatsapp" href={whatsapp} target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><MessageCircle size={22}/><span>Chat with us</span></a>
